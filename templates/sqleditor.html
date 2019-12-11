@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css" integrity="sha256-9mbkOfVho3ZPXfM7W8sV2SndrGDuh7wuyLjtsWeTI1Q=" crossorigin="anonymous" />
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.js" integrity="sha256-PHkGItNLOKwncPJgy7PBTvpxormE+UVUp7sHVEYEvKg=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.css" integrity="sha256-PWWDlCsO+b6rKHz9dgBeS5cqTmBbebfAtNXnEqy3Xvc=" crossorigin="anonymous" />
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/mode/sql/sql.js" integrity="sha256-4/XWqvWMy8Rf9I7wUkKh0byWJYvFlldAYiqvLgRCeho=" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="ui segment">
+        <p>
+            <h3>
+                Some help!
+            </h3>
+            <p id="queries">
+            </p>
+        </p>
+
+        {% if result %}
+        <div class="ui message">
+            {{ result }}
+        </div>
+        {% endif %}
+        {% if fetch_result %}
+        <div class="ui segment">
+            data:
+            <br />
+            <table class="ui table">
+                {% for r in fetch_result %}
+                    <tr>
+                        {% for c in r %}
+                            <td>{{ c }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        {% endif %}
+        <div class="ui segment">
+            <form class="ui form" action="" method="POST">
+                {% csrf_token %}
+                <textarea style="border: 1px solid black;" id="editor" name="sql" rows="5" cols="50">SELECT * FROM person;</textarea>
+                <input class="ui primary button" type="submit" />
+            </form>
+        </div>
+    </div>
+
+    <script>
+        CodeMirror(document.getElementById('queries'), {
+            value: 'CREATE TABLE person(id INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT, last_name TEXT);\nINSERT INTO person (name, last_name) VALUES("Sina","Parvizi");\nSELECT * FROM person;\nSELECT * FROM person WHERE name="Sina";\nSELECT * FROM sqlite_master WHERE type="table"; --list tables',
+            mode:  "sql",
+            readOnly: true,
+        }).setSize(-1, 110);
+        var myCodeMirror = CodeMirror.fromTextArea(document.getElementById('editor'), {
+            mode:  "sql",
+        });
+        myCodeMirror.setSize(-1, 100);
+    </script>
+</body>
+</html>
